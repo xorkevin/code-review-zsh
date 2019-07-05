@@ -5,4 +5,27 @@ target_branch=${2:-HEAD}
 
 merge_base=$(git merge-base $target_branch $base_branch)
 
-git diff --stat $merge_base $target_branch
+echo comparing $base_branch..$target_branch
+git diff --shortstat $merge_base $target_branch
+
+files=$(git diff --name-only $merge_base $target_branch)
+
+while true; do
+  read -sk opt
+  case $opt in
+    l)
+      git diff --stat $merge_base $target_branch
+      ;;
+    f)
+      file=$(echo "$files" | fzf)
+      git difftool --no-prompt $merge_base $target_branch -- $file
+      ;;
+    q)
+      break
+      ;;
+    *)
+      echo -ne "\r\e[0K"
+      echo -n "Usage: l - list changed files, f - launch difftool for file, q - quit"
+      ;;
+  esac
+done
