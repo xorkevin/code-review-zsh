@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+
+base_branch=${1:-${GIT_BASE_BRANCH:-master}}
+target_branch=${2:-HEAD}
+
+merge_base=$(git merge-base $target_branch $base_branch)
+
+git diff --stat $merge_base $target_branch
