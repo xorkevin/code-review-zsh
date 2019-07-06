@@ -37,7 +37,6 @@ function code-review () {
         selectfile=$(echo "$filesout" | fzf --reverse --preview '[[ $(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --color=always -r :$FZF_PREVIEW_LINES {} || head -$FZF_PREVIEW_LINES {}) 2> /dev/null')
         # alternate screen
         echo -ne "\e[?1049h"
-        echo selectfile: "begin${selectfile}end"
         if [ -z $selectfile ]; then
         else
           git difftool --no-prompt $merge_base $target_branch -- $selectfile
