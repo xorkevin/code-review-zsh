@@ -10,9 +10,12 @@ function code-review () {
 
   local merge_base=$(git merge-base $target_branch $base_branch)
 
-  local shortstatout=$(git diff --shortstat --color $merge_base $target_branch)
-  local statout=$(git diff --stat --color $merge_base $target_branch)
-  local filesout=$(git diff --relative --name-only $merge_base $target_branch)
+  local base_mode=true
+  local base=$merge_base
+
+  local shortstatout=$(git diff --shortstat --color $base $target_branch)
+  local statout=$(git diff --stat --color $base $target_branch)
+  local filesout=$(git diff --relative --name-only $base $target_branch)
 
   local LESS
   local selectfile
@@ -25,7 +28,7 @@ function code-review () {
     echo -ne "\e[?1049h"
     # clear screen; move to top left
     echo -ne "\e[2J\e[H"
-    echo " comparing $base_branch..$target_branch"
+    echo " comparing $base_branch..$target_branch | merge base mode: $base_mode"
     echo " from $(pwd)"
     echo $shortstatout
     echo -n " Usage: l - list changed files, f - launch difftool for file, q - quit"
@@ -42,6 +45,18 @@ function code-review () {
         else
           git difftool --no-prompt $merge_base $target_branch -- $selectfile
         fi
+        ;;
+      (m)
+        if [ "$base_mode" = true ]; then
+          base_mode=false
+          base=$base_branch
+        else
+          base_mode=true
+          base=$merge_base
+        fi
+        shortstatout=$(git diff --shortstat --color $base $target_branch)
+        statout=$(git diff --stat --color $base $target_branch)
+        filesout=$(git diff --relative --name-only $base $target_branch)
         ;;
       (q)
         break
