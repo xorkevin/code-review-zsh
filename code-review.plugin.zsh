@@ -31,7 +31,7 @@ function code-review () {
     echo " comparing $base_branch..$target_branch | merge base mode: $base_mode"
     echo " from $(pwd)"
     echo $shortstatout
-    echo -n " Usage: l - list changed files, f - launch difftool for file, m - toggle merge base, q - quit"
+    echo -n " Usage:\n  l - list changed files\n  f - launch difftool for file\n  m - toggle merge base\n  y - git fetch\n  q - quit"
     read -sk opt
     case $opt in
       (l)
@@ -57,6 +57,9 @@ function code-review () {
         shortstatout=$(git diff --shortstat --color $base $target_branch)
         statout=$(git diff --stat --color $base $target_branch)
         filesout=$(git diff --relative --name-only $base $target_branch)
+        ;;
+      (y)
+        git fetch
         ;;
       (q)
         break
