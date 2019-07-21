@@ -31,7 +31,7 @@ function code-review () {
     echo " comparing $base_branch..$target_branch | merge base mode: $base_mode"
     echo " from $(pwd)"
     echo $shortstatout
-    echo -n " Usage: l - list changed files, f - launch difftool for file, q - quit"
+    echo -n " Usage: l - list changed files, f - launch difftool for file, m - toggle merge base, q - quit"
     read -sk opt
     case $opt in
       (l)
